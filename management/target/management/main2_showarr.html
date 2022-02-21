@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/normalize/5.0.0/normalize.min.css">
+    <link type="text/css" rel="stylesheet" href="css/common.css">
+    <link type="text/css" rel="stylesheet" href="css/main2_showarr.css">
+    <link type="text/css" rel="stylesheet" href="skin/jedate.css">
+    <script type="text/javascript" src="src/jedate.js"></script>
+    <link rel="stylesheet" href="css/main1.css">
+    <title>查看部门排班</title>
+    <!--导入jquery-->
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/intenotify.js"></script>
+
+    <script src="https://cdn.bootcss.com/jquery/1.9.0/jquery.js"></script>
+    <script>
+
+        $(function () {
+            $.post("management_war_exploded/arrange/showAllToIntendent", {}, function (data) {
+                var li = '班次安排 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;所属部门: ' + data[0].depname;
+                $("#selname").html(li);
+                opSelected(data);
+            });
+
+            $("#new_select").click(function () { //增加排班
+                $("#revarrno").val("");
+                $("#empdate").val("");
+                $("#empstart").val("");
+                $("#newempno").val($("#empno_search").val());
+                var obj = document.getElementById("newArr2");
+                if (obj.style.display === "none") {
+                    obj.style.display = "";
+                } else {
+                    obj.style.display = "none";
+                }
+
+            });
+
+            $("#new_cancel").click(function () { //取消修改
+
+                var obj = document.getElementById("newArr");
+                if (obj.style.display === "none") {
+                    obj.style.display = "";
+                } else {
+                    $("#revarrno").val("");
+                    $("#empdate").val("");
+                    $("#empstart").val("");
+                    obj.style.display = "none";
+                }
+            });
+
+            // out_select
+
+            $("#out_select").click(function () { //导出工作安排
+
+                $.post("management_war_exploded/arrange/outputArrangement1", $("#man_search_user").serialize(), function () {
+                    var download = $("#download");
+                    var li = '<a href="management_war_exploded/arrange/outputArrangement2" id="down" ' +
+                        'download="w3logo.xls" style="display: none;"></a>\n';
+                    download.append(li);
+                    console.log(download);
+                    $("#down")[0].click();
+                });
+            });
+
+            $("#new2_cancel").click(function () { //取消新增
+
+                var obj = document.getElementById("newArr2");
+                if (obj.style.display === "none") {
+                    obj.style.display = "";
+                } else {
+                    $("#newempno").val("");
+                    $("#newdate").val("");
+                    $("#newstart").val("");
+                    $("#newisover").val("");
+                    obj.style.display = "none";
+                }
+            });
+
+            $("#new_ensure").click(function () { //确定修改
+                var arrno = $("#revarrno").val();
+                var ddate = $("#empdate").val();
+                var toltime = $("#empstart").val();
+                var sstart = toltime.substring(0, 5) + ":00";
+                var eend = toltime.substring(8) + ":00";
+                var empstart = ddate + " " + sstart;
+                var empend = ddate + " " + eend;
+                var isover = $("#empisover").val();
+                $.post("management_war_exploded/arrange/updateArrByArrno", {
+                    arrno: arrno,
+                    empstart: empstart,
+                    empend: empend,
+                    isover: isover
+                }, function (data) {
+                    if (data.flag) {
+                        searchByNameMonth();
+                    } else {
+
+                    }
+
+                });
+            });
+
+            $("#new2_ensure").click(function () { //确定新增
+
+                //15:08 ~ 17:08
+                //2020-06-09
+                var empno = $("#newempno").val();
+                var ddate = $("#newdate").val();
+                var toltime = $("#newstart").val();
+                var sstart = toltime.substring(0, 5) + ":00";
+                var eend = toltime.substring(8) + ":00";
+                var empstart = ddate + " " + sstart;
+                var empend = ddate + " " + eend;
+                var isover = $("#newisover").val();
+
+                $.post("management_war_exploded/arrange/addANewArr", {
+                    empno: empno,
+                    empstart: empstart,
+                    empend: empend,
+                    isover: isover
+                }, function (data) {
+                    searchByNameMonth();
+                });
+            });
+
+            $("#rev_search").click(function () { //修改选中
+
+                var dataLength = localStorage.getItem("dataLength");
+                var sum = 0;
+                for (var i = 0; i < dataLength; i++) {
+                    var tCkbId = "#ckb" + i;
+                    if ($(tCkbId).is(':checked')) {
+                        var arrnoVal = document.getElementById("arrno" + i).innerHTML;
+                        var dateVal = "2020-" + document.getElementById("ddddate" + i).innerHTML;
+                        var startVal = document.getElementById("start" + i).innerHTML;
+                        var endVal = document.getElementById("end" + i).innerHTML;
+                        var isoverVal = document.getElementById("isover" + i).innerHTML;
+                        var timeVal = startVal + ' ~ ' + endVal;
+                        $("#revarrno").val(arrnoVal);
+                        $("#empdate").val(dateVal);
+                        $("#empstart").val(timeVal);
+                        if (isoverVal === "否") {
+                            $("#empisover").val("0");
+                        } else if (isoverVal === "是") {
+                            $("#empisover").val("1");
+                        } else {
+                            $("#empisover").val("none");
+                        }
+                        sum++;
+                        break;
+                    }
+                }
+
+                var obj = document.getElementById("newArr");
+                if (obj.style.display === "none") {
+                    obj.style.display = "";
+                } else {
+                    obj.style.display = "none";
+
+                }
+
+            });
+
+            $("#del_select").click(function () {
+                var dataLength = localStorage.getItem("dataLength");
+                var sum = 0;
+                var deltArrno = [];
+                for (var i = 0; i < dataLength; i++) {
+                    var tCkbId = "#ckb" + i;
+                    if ($(tCkbId).is(':checked')) {
+                        deltArrno[sum] = document.getElementById("arrno" + i).innerHTML;
+                        sum++;
+                    }
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "management_war_exploded/arrange/deleteArr",
+                    data: {"deltArrno": deltArrno},
+                    traditional: true,
+                    async: true,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.flag) {
+                            searchByNameMonth();
+                        }
+                    },
+                    error: function () {
+                    }
+                });
+
+            });
+
+
+            $("#btn_search").click(function () { //查询
+                searchByNameMonth();
+            });
+
+            $("#file_button").click(function () {
+                $.post("management_war_exploded/arrange/inputArrangement",
+                    $("#file_form").serialize(),
+                    function (data) {
+                        if (data.flag) {
+                            arert("文件上传成功");
+                        } else {
+                            arert("文件上传失败");
+                        }
+                    }
+                )
+            });
+
+
+        });
+
+        function searchByNameMonth() {
+            var isEmpno = document.getElementById("empno_search").value;
+            $.post("management_war_exploded/arrange/intendentSearch", $("#man_search_user").serialize(), function (data) {
+                opSelected(data);
+            });
+        }
+
+
+        function opSelected(data) {
+            // var sc1 = document.createElement("script");
+            // sc1.src = "src/jedate.js";
+            // sc1.type = "text/javascript";
+            // $("#userall").append(sc1);
+            // var sc2 = document.createElement("script");
+            // sc2.src = "test/demo.js";
+            // sc2.type = "text/javascript";
+            // $("#userall").append(sc2);
+            var dataLength = data.length;
+            localStorage.setItem("dataLength", dataLength);
+            var lli = '<tr class="list-info">\n' +
+                '            <td>选中</td>\n' +
+                '            <td>排班编号</td>\n' +
+                '            <td>员工编号</td>\n' +
+                '            <td>员工姓名</td>\n' +
+                '            <td>日期</td>\n' +
+                '            <td>上班时间</td>\n' +
+                '            <td>下班时间</td>\n' +
+                '            <td>是否加班</td>\n' +
+                '            <td>是否请假</td>\n' +
+                '            <td>是否是临时加班</td>\n' +
+                '        </tr>';
+            lli += '';
+
+            for (var i = 0; i < data.length; i++) {
+                var li = '<tr>';
+                li += '<td>';
+                li += '<input type="checkbox" id="ckb' + i + '" name="ckb' + i + '" value="333">';
+                li += '</td>';
+                li += '<td id="arrno' + i + '">' + data[i].arrno + '</td>';
+                li += '<td id="empno' + i + '">' + data[i].empno + '</td>';
+                li += '<td id="empname' + i + '">' + data[i].empname + '</td>';
+                li += '<td id="ddddate' + i + '">' + data[i].ddddate + '</td>';
+                li += '<td id="start' + i + '">' + data[i].start + '</td>';
+                li += '<td id="end' + i + '">' + data[i].end + '</td>';
+                li += '<td id="isover' + i + '">' + data[i].isover + '</td>';
+                li += '<td id="isover' + i + '">' + data[i].isleave + '</td>';
+                li += '<td id="istemporary' + i + '">' + data[i].istemporary + '</td>';
+                li += '</tr>';
+                lli += li;
+            }
+
+            $("#userall").html(lli);
+        }
+
+
+    </script>
+
+
+</head>
+<body>
+<div id="header"></div>
+<div class="usermethod">
+    <ul class="so-method">
+        <li>
+            <div class="method-td">
+                <a href="main2_showinfo.html">个人信息</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main2_showdep.html">部门信息</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="#">申请审批</a>
+            </div>
+            <ul>
+                <li><a href="main2_leavecheck.html" class="menu1">请假</a></li>
+                <li><a href="main2_backcheck.html" class="menu2">销假</a></li>
+                <li><a href="main2_overcheck.html" class="menu3">加班</a></li>
+            </ul>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main2_showarr.html">班次安排</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main2_showturnout.html">出勤信息</a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div class="other-info">
+    <div class="info-all">
+        <div id="selname" class="selname"></div>
+        <div class="userselected">
+            <form id="man_search_user">
+                <table id="user_search">
+                    <tr>
+                        <td class="td_left">
+                            <label for="empno_search">工号</label>
+                        </td>
+                        <td>
+                            <input type="text" id="empno_search" name="empno_search">
+                        </td>
+                        <td class="td_left">
+                            <label for="date_search">&nbsp;&nbsp;&nbsp;&nbsp;月份</label>
+                        </td>
+                        <td>
+                            <select id="date_search" name="date_search">
+                                <option value="all">全部</option>
+                                <option value="2020-01-01 00:00:00">一月</option>
+                                <option value="2020-02-01 00:00:00">二月</option>
+                                <option value="2020-03-01 00:00:00">三月</option>
+                                <option value="2020-04-01 00:00:00">四月</option>
+                                <option value="2020-05-01 00:00:00">五月</option>
+                                <option value="2020-06-01 00:00:00">六月</option>
+                                <option value="2020-07-01 00:00:00">七月</option>
+                                <option value="2020-08-01 00:00:00">八月</option>
+                                <option value="2020-09-01 00:00:00">九月</option>
+                                <option value="2020-10-01 00:00:00">十月</option>
+                                <option value="2020-11-01 00:00:00">十一月</option>
+                                <option value="2020-12-01 00:00:00">十二月</option>
+                            </select>
+                        </td>
+                        <td>&nbsp;&nbsp;&nbsp;</td>
+                        <td>
+                            <button type="button" id="btn_search">查看</button>
+                            <button type="button" id="rev_search">更新选中</button>
+                            <button type="button" id="del_select">删除选中</button>
+                            <button type="button" id="new_select">增加排班</button>
+                            <button type="button" id="out_select">导出当前</button>
+                            <button type="button" onclick="location.href='main2_wholeadd.html';">批量添加</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+
+            <div class="all-form">
+
+
+                <form id="revArrForm">
+                    <div style="display:none" id="newArr" class="newArr">
+                        <table>
+                            <tr>
+                                <td>排班号</td>
+                                <td>日期</td>
+                                <td>上下班时间</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" id="revarrno" name="revarrno" placeholder="排班班号"></td>
+                                <td><input type="text" class="jeinput" id="empdate" name="empdate" placeholder="选择日期">
+                                </td>
+                                <td><input type="text" class="jeinput" id="empstart" name="empstart"
+                                           placeholder="选择员工上下班时间"></td>
+                                <td><select name="empisover" id="empisover">
+                                    <option value="none">是否加班</option>
+                                    <option value="0">否</option>
+                                    <option value="1">是</option>
+                                </select></td>
+                                <td>
+                                    <button type="button" id="new_ensure">确定</button>
+                                </td>
+                                <td>
+                                    <button type="button" id="new_cancel">取消</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </form>
+                <div class="all-form">
+                    <form id="newArrForm">
+                        <div style="display:none" id="newArr2" class="newArr">
+
+                            <table>
+                                <tr>
+                                    <td><input type="text" id="newempno" name="newempno" placeholder="员工编号"></td>
+                                    <td><input type="text" class="jeinput" id="newdate" name="newdate"
+                                               placeholder="选择日期">
+                                    </td>
+                                    <td><input type="text" class="jeinput" id="newstart" name="newstart"
+                                               placeholder="选择员工上下班时间"></td>
+                                    <td><select name="newisover" id="newisover">
+                                        <option value="none">是否加班</option>
+                                        <option value="0">否</option>
+                                        <option value="1">是</option>
+                                    </select></td>
+                                    <td>
+                                        <button type="button" id="new2_ensure">确定</button>
+                                    </td>
+                                    <td>
+                                        <button type="button" id="new2_cancel">取消</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="usertable">
+                    <table id="userall"></table>
+                </div>
+
+                <form id="submitForm"></form>
+
+            </div>
+            <!--    <form id="man2NewUser" name="man2NewUser">-->
+            <!--        <input type="text" id="know" name="know" value="???">-->
+            <!--    </form>-->
+
+            <div id="sss"></div>
+            <span id="ssss" style="display:none"></span>
+
+            <div id="download"></div>
+        </div>
+
+    </div>
+</div>
+
+<!--导入布局js，共享header和footer-->
+<script type="text/javascript" src="js/include.js"></script>
+<script type="text/javascript" src="test/demo.js"></script>
+
+
+</body>
+</html>

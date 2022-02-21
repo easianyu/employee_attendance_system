@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/main1.css">
+    <title>经理主页</title>
+    <!--导入jquery-->
+    <script src="js/jquery-3.3.1.js"></script>
+
+    <script>
+        $(function () {
+            $.post("management_war_exploded/arrange/showAllToManager", {}, function (data) {
+                showUsers(data);
+            })
+        })
+
+        $(function () {
+            $("#btn_search").click(function () {
+
+                var divObj = document.getElementById("userall");
+                var empno_search = $("#empno_search").val();
+                var date_search = $(".date_search").val();
+
+                // if (divObj.style.display == "") {
+                //     divObj.style.display = "none";
+                //
+                // } else {
+                //     divObj.style.display = "";
+                // }
+                $.post("management_war_exploded/arrange/managerSearch", $("#man_search_user").serialize(), function (data) {
+                    showUsers(data);
+                });
+            });
+        });
+
+        function showUsers(data) {
+            var li = '<tr>\n' +
+                '            <td>员工编号</td>\n' +
+                '            <td>员工姓名</td>\n' +
+                '            <td>所属部门</td>\n' +
+                '            <td>日期</td>\n' +
+                '            <td>是否是加班</td>\n' +
+                '            <td>是否迟到</td>\n' +
+                '            <td>是否早退</td>\n' +
+                '            <td>是否请假</td>\n' +
+                '            <td>是否是临时加班</td>\n' +
+                '        </tr>';
+
+            for (var i = 0; i < data.length; i++) {
+                li += '<tr>';
+                li += '<td>' + data[i].empno + '</td>';
+                li += '<td>' + data[i].empname + '</td>';
+                li += '<td>' + data[i].depname + '</td>';
+                li += '<td>' + data[i].ddddate + '</td>';
+                li += '<td>' + data[i].isover + '</td>';
+                li += '<td>' + data[i].islate + '</td>';
+                li += '<td>' + data[i].isearly + '</td>';
+                li += '<td>' + data[i].islate + '</td>';
+                li += '<td>' + data[i].istemporary + '</td>';
+                li += '</tr>';
+            }
+
+            $("#userall").html(li);
+        }
+
+        function check() {
+            var empno_search = $("#empno_search").val();
+            var date_search = $(".date_search").val();
+        }
+
+    </script>
+
+
+</head>
+<body>
+<div id="header"></div>
+<div class="usermethod">
+    <table border="1">
+        <tr>
+            <td>
+                <a href="main1_showinfo.html">个人信息</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="main1_showall.html">员工信息</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="main1_showcmp.html">公司信息</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="main1_showarr.html">班次信息</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="main1_showturnout.html">出勤信息</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<form id="man_search_user">
+    <table id="user_search">
+        <tr>
+            <td class="td_left">
+                <label for="empno_search">工号</label>
+            </td>
+            <td>
+                <input type="text" id="empno_search" name="empno_search">
+            </td>
+            <td class="td_left">
+                <label for="date_search">月份</label>
+            </td>
+            <td>
+                <select id="date_search" name="date_search">
+                    <option value="all">全部</option>
+                    <option value="2020-01-01 00:00:00">一月</option>
+                    <option value="2020-02-01 00:00:00">二月</option>
+                    <option value="2020-03-01 00:00:00">三月</option>
+                    <option value="2020-04-01 00:00:00">四月</option>
+                    <option value="2020-05-01 00:00:00">五月</option>
+                    <option value="2020-06-01 00:00:00">六月</option>
+                    <option value="2020-07-01 00:00:00">七月</option>
+                    <option value="2020-08-01 00:00:00">八月</option>
+                    <option value="2020-09-01 00:00:00">九月</option>
+                    <option value="2020-10-01 00:00:00">十月</option>
+                    <option value="2020-11-01 00:00:00">十一月</option>
+                    <option value="2020-12-01 00:00:00">十二月</option>
+                </select>
+                <button type="button" id="btn_search">查看班次安排</button>
+            </td>
+        </tr>
+    </table>
+</form>
+<div class="usertable">
+
+    <table border="1" id="userall"></table>
+</div>
+
+<!--导入布局js，共享header和footer-->
+<script type="text/javascript" src="js/include.js"></script>
+
+</body>
+</html>

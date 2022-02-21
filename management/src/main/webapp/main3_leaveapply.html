@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/normalize/5.0.0/normalize.min.css">
+    <link type="text/css" rel="stylesheet" href="css/common.css">
+    <link type="text/css" rel="stylesheet" href="css/main3_leaveapply.css">
+    <link type="text/css" rel="stylesheet" href="skin/jedate.css">
+    <script type="text/javascript" src="src/jedate.js"></script>
+    <link rel="stylesheet" href="css/main1.css">
+    <title>请假申请</title>
+    <!--导入jquery-->
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/1.9.0/jquery.js"></script>
+    <script>
+
+        $(function () {
+            $.post("management_war_exploded/arrange/showLeaveApplyUsers", {}, function (data) {
+                var li = '请假申请'
+                    + '&nbsp;&nbsp;&nbsp;&nbsp;工号：' + data[0].empno
+                    + '&nbsp;&nbsp;&nbsp;&nbsp;姓名：' + data[0].empname
+                    + '&nbsp;&nbsp;&nbsp;&nbsp;';
+                $("#selname").html(li);
+                $("#empno").val(data[0].empno);
+                opSelected(data);
+            });
+
+            $("#new_select").click(function () { //新的请假
+                $("#revarrno").val("");
+                $("#empdate").val("");
+                $("#empstart").val("");
+                $("#newempno").val($("#empno_search").val());
+                var obj = document.getElementById("newArr2");
+                if (obj.style.display === "none") {
+                    obj.style.display = "";
+                } else {
+                    obj.style.display = "none";
+                }
+
+            });
+
+
+            $("#new2_cancel").click(function () { //取消新增
+
+                var obj = document.getElementById("newArr2");
+                if (obj.style.display === "none") {
+                    obj.style.display = "";
+                } else {
+                    $("#newempno").val("");
+                    $("#newdate").val("");
+                    $("#newstart").val("");
+                    $("#newisover").val("");
+                    $("#leaveRea").val("");
+                    obj.style.display = "none";
+                }
+            });
+
+
+            $("#new2_ensure").click(function () { //确定新增
+                    // 2020-06-07 18:14:05 ~ 2020-07-22 00:00:00
+                var empno = $("#empno").val();
+                var ddate = $("#newdate").val();
+
+
+                var sstart = ddate.substring(0, 19);
+                var eend = ddate.substring(22);
+                var type = $("#newisover").val();
+                var reason = type+ ": " + $("#leaveRea").val();
+
+                $.post("management_war_exploded/arrange/addLeaveApply", {
+                    empno: empno,
+                    empstart: sstart,
+                    empend: eend,
+                    reason: reason
+                }, function () {
+                    searchByNameMonth();
+                });
+            });
+
+
+
+            $("#del_select").click(function () {
+                var dataLength = localStorage.getItem("dataLength");
+                var sum = 0;
+                var deleteLeaveno = [];
+                for (var i = 0; i < dataLength; i++) {
+                    var tCkbId = "#ckb" + i;
+                    if ($(tCkbId).is(':checked')) {
+                        deleteLeaveno[sum] = document.getElementById("leaveno" + i).innerHTML;
+                        sum++;
+                    }
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "management_war_exploded/arrange/deleteLeaveApply",
+                    data: {"deleteLeaveno": deleteLeaveno},
+                    traditional: true,
+                    async: true,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.flag) {
+                            searchByNameMonth();
+                        }
+                    },
+                    error: function () {
+                    }
+                });
+            });
+
+            $("#cal_select").click(function () {
+                var dataLength = localStorage.getItem("dataLength");
+                var sum = 0;
+                var backLeaveno = [];
+                for (var i = 0; i < dataLength; i++) {
+                    var tCkbId = "#ckb" + i;
+                    if ($(tCkbId).is(':checked')) {
+                        backLeaveno[sum] = document.getElementById("leaveno" + i).innerHTML;
+                        sum++;
+                    }
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "management_war_exploded/arrange/backLeaveApply",
+                    data: {"backLeaveno": backLeaveno},
+                    traditional: true,
+                    async: true,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.flag) {
+                            searchByNameMonth();
+                        }
+                    },
+                    error: function () {
+                    }
+                });
+            });
+        });
+
+        function searchByNameMonth() {
+            $.post("management_war_exploded/arrange/showLeaveApplyUsers", {},function (data) {
+                opSelected(data);
+            });
+        }
+
+
+        function opSelected(data) {
+
+            var dataLength = data.length;
+            localStorage.setItem("dataLength", dataLength);
+            var lli = '<tr class="list-info">\n' +
+                '            <td>选&nbsp;&nbsp;中</td>\n' +
+                '            <td>请假编号</td>\n' +
+                '            <td>开始时间</td>\n' +
+                '            <td>结束时间</td>\n' +
+                '            <td>请假理由</td>\n' +
+                '            <td>申请状态</td>\n' +
+                '        </tr>';
+            lli += '';
+
+            for (var i = 0; i < data.length; i++) {
+                var li = '<tr>';
+                li += '<td><input type="checkbox" id="ckb' + i + '" name="ckb' + i + '" value="333"></td>';
+                li += '<td id="leaveno' + i + '">' + data[i].leaveno + '</td>';
+                li += '<td id="startStr' + i + '">' + data[i].startStr + '</td>';
+                li += '<td id="endStr' + i + '">' + data[i].endStr + '</td>';
+                li += '<td id="reason' + i + '">' + data[i].reason + '</td>';
+                li += '<td id="reason' + i + '">' + data[i].isapplyStr + '</td>';
+                li += '</tr>';
+                lli += li;
+            }
+
+            $("#userall").html(lli);
+        }
+
+
+    </script>
+
+
+</head>
+<body>
+<div id="header"></div>
+<div class="usermethod">
+    <ul class="so-method">
+        <li>
+            <div class="method-td">
+                <a href="main3_showinfo.html">个人信息</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main3_showarr.html">班次安排</a>
+
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main3_showturnout.html">出勤信息</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="#">申&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请</a>
+            </div>
+            <ul>
+                <li><a href="main3_leaveapply.html" class="menu1">请假</a></li>
+                <li><a href="main3_overapply.html" class="menu3">加班</a></li>
+            </ul>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main3_checkin.html">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;卡</a>
+            </div>
+        </li>
+
+    </ul>
+</div>
+
+<div class="other-info">
+    <div class="info-all">
+        <div class="userselected">
+            <form id="man_search_user">
+                <table id="user_search">
+                    <tr>
+                        <td>
+                            <div id="selname" class="selname"></div>
+                        </td>
+                        <td>
+                            <button type="button" id="del_select">取消申请</button>
+                        </td>
+                        <td>
+                            <button type="button" id="new_select">申请请假</button>
+                        </td>
+                        <td>
+                            <button type="button" id="cal_select">销假</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+
+            <div class="all-form">
+
+                <div class="all-form">
+                    <form id="newArrForm">
+                        <input type="hidden" id="empno" name="empno">
+                        <div id="newArr2" class="newArr" style="display:none;">
+                            <table>
+                                <tr>
+                                    <td><input type="text" class="jeinput" id="newdate" name="newdate"
+                                               placeholder="选择日期">
+                                    </td>
+                                    <td><select name="newisover" id="newisover">
+                                        <option value="none">请假类型</option>
+                                        <option value="事假">事假</option>
+                                        <option value="病假">病假</option>
+                                    </select></td>
+                                </tr>
+                            </table>
+                            <div class="rrr"><textarea class="reason" id="leaveRea" name="leaveRea" placeholder="写明请假理由"></textarea>
+                            </div>
+                            <div class="bbutton">
+                                <button type="button" id="new2_cancel">取消</button>
+                                <button type="button" id="new2_ensure">确定</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+                <div class="usertable">
+                    <table id="userall"></table>
+                </div>
+
+                <form id="submitForm"></form>
+
+            </div>
+            <!--    <form id="man2NewUser" name="man2NewUser">-->
+            <!--        <input type="text" id="know" name="know" value="???">-->
+            <!--    </form>-->
+
+            <div id="sss"></div>
+            <span id="ssss" style="display:none"></span>
+
+        </div>
+
+    </div>
+</div>
+
+<!--导入布局js，共享header和footer-->
+<script type="text/javascript" src="js/include.js"></script>
+<script type="text/javascript" src="test/demo1.js"></script>
+
+
+</body>
+</html>
+

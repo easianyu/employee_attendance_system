@@ -1,0 +1,169 @@
+
+
+#header {
+    background-color: #454545;
+    width: 100%;
+    overflow: hidden;
+    color: #eee;
+}
+
+
+select{
+    border: solid 1px #000;
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+    background: url("http://ourjs.github.io/static/2015/arrow.png") no-repeat scroll right center transparent;
+    padding-right: 14px;
+}
+
+a {
+     color: #888;
+    text-decoration: none;
+ }
+
+
+a:hover{
+    color: #eee;
+    -webkit-transition: color 200ms;
+    -o-transition: color 200ms;
+    transition: color 200ms;
+}
+
+body{
+    background: #555555;
+
+}
+
+input{
+}
+
+input[type=checkbox] {
+    zoom:200%;
+}
+.welcome {
+    font-size: 40px;
+    float: left;
+    width: 30%;
+    padding: 30px 30px;
+    font-weight: 900;
+}
+
+.usertype {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.user-exit{
+    float: right;
+    /*padding-left:70px;*/
+}
+
+.userinfo {
+    float: right;
+    padding: 30px 30px;
+}
+
+.usermethod {
+    float: left;
+    /*width: 120px;*/
+    width: 10%;
+    background: #555555;
+}
+
+.usermethod.a {
+    color: #eee;
+}
+
+.other-info {
+    width: 90%;
+    background: #eee;
+    height: 5000px;
+    float: right;
+}
+
+.info-all{
+    margin: 14px 20px;
+}
+
+.method-td {
+    width: 100%;
+    overflow: hidden;
+}
+
+.so-method{
+    margin-top: 10px;
+    margin-left: 3px;
+    border: 0 solid #555555;
+    min-height: 25px;
+    line-height: 100px;
+    text-align: center;
+    font-size: 25px;
+    color: #eee;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.so-method li{
+    position: relative;
+    float: left;
+    list-style-type: none;
+    height: 65px;
+}
+
+
+.so-method li a {
+    display: block;
+    padding: 0 14px;
+    margin: 6px 0;
+    text-decoration: none;
+    line-height: 28px;
+}
+.so-method li:last-child a {
+    border-right: none;
+}
+
+
+/* 二级菜单样式： */
+.so-method ul{
+    position: absolute;
+    top: 0;
+    left: 129px;
+    height: 160px;
+    width: 94px;
+    background-color: #555555;
+    /*border-radius: 5px 5px 5px 5px;*/
+    /*-webkit-border-radius: 5px 5px 5px 5px;*/
+    /*-moz-border-radius: 5px 5px 5px 5px;*/
+    /*-ms-border-radius: 5px 5px 5px 5px;*/
+    /*-o-border-radius: 5px 5px 5px 5px;*/
+    /*border: 1px solid #fff;*/
+    display: none;
+}
+
+
+.so-method li:hover ul {display: block;}
+
+
+
+.so-method li:hover ul li {
+    display: block;
+    height: 36px;
+    overflow: visible;
+    padding-left: 5px;
+    padding-right: 0;
+    padding-top: 10px;
+}
+
+
+.so-method li:hover ul a {
+    color: #888;
+}
+
+.so-method li:hover ul a:hover {
+    color: #ffffff;
+}
+

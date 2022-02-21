@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/normalize/5.0.0/normalize.min.css">
+    <link type="text/css" rel="stylesheet" href="css/common.css">
+    <link type="text/css" rel="stylesheet" href="css/main1_showcmp.css">
+
+    <link rel="stylesheet" href="css/main1.css">
+    <title>公司信息</title>
+    <!--导入jquery-->
+    <script src="js/jquery-3.3.1.js"></script>
+
+    <script>
+
+        $(function () {
+            $.post("management_war_exploded/arrange/showCmpInfo", {}, function (data) {
+                $("#cmpname").html(data.name);
+                $("#tolusers").html(data.tolUsers);
+                $("#phone").html(data.phone);
+                $("#address").html(data.address);
+            })
+        })
+
+    </script>
+
+
+</head>
+<body>
+<div id="header"></div>
+<div class="usermethod">
+    <ul class="so-method">
+        <li>
+            <div class="method-td">
+                <a href="main1_showinfo.html">个人信息</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showall.html">员工信息</a>
+
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showcmp.html">公司信息</a>
+
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showarr.html">班次信息</a>
+
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showturnout.html">出勤信息</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showtemporary.html">临时加班</a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+
+<div class="other-info">
+    <div class="info-all">
+
+    <div class="cmpinfo">
+        <table class="tab">
+            <tr>
+                <td class="list-name">公司名称</td>
+                <td id="cmpname">公司名称</td>
+            </tr>
+            <tr>
+                <td class="list-name">公司总员工数</td>
+                <td id="tolusers">公司总员工数</td>
+            </tr>
+            <tr>
+                <td class="list-name">公司电话</td>
+                <td id="phone">公司电话</td>
+            </tr>
+            <tr>
+                <td class="list-name">公司地址</td>
+                <td id="address">公司地址</td>
+            </tr>
+        </table>
+    </div>
+    </div>
+</div>
+
+<!--导入布局js，共享header和footer-->
+<script type="text/javascript" src="js/include.js"></script>
+
+
+</body>
+</html>

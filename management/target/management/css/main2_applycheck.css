@@ -1,0 +1,29 @@
+.selname{
+    font-size: 30px;
+    color: #555555;
+    font-weight: 900;
+    padding: 10px 0;
+}
+
+button {
+    background-color: #666666;
+    border: none;
+    color: white;
+    padding: 6px 34px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.usertable table tr td{
+    border: 3px solid #777777;
+    padding: 8px 25px;
+}
+
+.usertable table{
+    border-collapse: collapse;
+}
+.usertable{
+    margin-top: 13px;
+}

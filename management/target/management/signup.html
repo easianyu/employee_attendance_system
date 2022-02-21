@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="css/signup.css">
+    <title>员工账户注册</title>
+    <script src="js/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="js/include.js"></script>
+
+    <script>
+
+        $(function () {
+            $("#sup_sub").click(function () { //点击注册的按钮
+                var pwd1 = $("#emppassword").val();
+                var pwd2 = $("#emppassword2").val();
+                if (pwd1 === pwd2) {
+                    $.post("management_war_exploded/user/registUser", $("#registForm").serialize(), function (data) {
+                        if (data.flag) {
+                            //注册成功
+                            alert("注册成功，点击回到登陆界面");
+                            location.href = "index.html";
+                        } else {
+                            //注册失败
+                            $("#errorMsg").html("未发送验证码或验证码错误");
+                        }
+                    });
+                } else {
+                    $("#errorMsg").html("两次输入密码不匹配");
+                }
+            });
+
+            $("#checkcode").click(function () { //点击发送邮箱验证码的按钮
+                var mailStr = $("#empemail").val();
+                if (mailStr !== "") {
+                    $.post("management_war_exploded/user/checkCode", $("#empemail").serialize(), function (data) {
+                        if (data.flag) {
+                            alert("验证码发送成功！");
+                        } else {
+                            alert("发送失败！");
+                        }
+                    });
+                } else {
+                    alert("请输入邮箱！");
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+<!--引入头部-->
+<div id="header"></div>
+<section id="login_wrap">
+    <div class="login_box">
+        <div class="title">
+        </div>
+        <div class="login_inner">
+
+            <form id="registForm" action="" method="post" accept-charset="utf-8">
+                <input type="hidden" name="action" value="login"/>
+                <div class="sign-in">
+                    <div class="ttext">请填写注册用户信息</div>
+                    <table class="tableTab">
+                        <tr>
+                            <td><input name="empno" type="text" placeholder="请输入工号" autocomplete="off"></td>
+                            <td>工号</td>
+                        </tr>
+                        <tr>
+                            <td><input name="empname" type="text" placeholder="请输入姓名" autocomplete="off"></td>
+                            <td>姓名</td>
+                        </tr>
+                        <tr>
+                            <td><input name="emppassword" id="emppassword" type="password" placeholder="请输入密码"
+                                       autocomplete="off"></td>
+                            <td>密码</td>
+                        </tr>
+                        <tr>
+                            <td><input name="emppassword2" id="emppassword2" type="password" placeholder="请再次输入密码"
+                                       autocomplete="off"></td>
+                            <td>确认密码</td>
+                        </tr>
+                        <tr>
+                            <td><select id="empposno" name="empposno">
+                                <option value="1">请选择职位</option>
+                                <option value="10">经理</option>
+                                <option value="20">部门主管</option>
+                                <option value="30">员工</option>
+                            </select></td>
+                            <td>选择职位</td>
+                        </tr>
+                        <tr>
+                            <td><input name="empemail" id="empemail" type="text" placeholder="请输入邮箱" autocomplete="off">
+                            </td>
+                            <td>
+                                <button type="button" id="checkcode" class="checkcode">发送验证码</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input name="subcheckcode" type="text" placeholder="请输入验证码" autocomplete="off"></td>
+                            <td>邮箱验证码</td>
+                        </tr>
+                        <tr>
+                            <td><input name="empphoneno" type="text" placeholder="请输入电话号码" autocomplete="off"></td>
+                            <td>电话</td>
+                        </tr>
+                        <tr>
+                            <td><select id="depno" name="depno">
+                                <option value="10">请选择部门</option>
+                                <option value="100">管理部门</option>
+                                <option value="200">算法部门</option>
+                                <option value="300">开发部门</option>
+                                <option value="400">测试部门</option>
+                                <option value="500">市场部门</option>
+                            </select></td>
+                            <td>身份信息</td>
+                        </tr>
+
+                    </table>
+                </div>
+
+                <div id="errorMsg" class="alert-danger"></div>
+
+                <div class="submit_btn">
+                    <button type="button" id="sup_sub">注册</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script src="js/jquery-1.11.0.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/include.js"></script>
+</body>
+
+</html>

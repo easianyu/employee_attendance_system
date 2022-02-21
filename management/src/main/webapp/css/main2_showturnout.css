@@ -1,0 +1,57 @@
+.selected-info{
+    color: #555555;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.usertable table tr td{
+    border: 3px solid #777777;
+    padding: 8px 4px;
+    text-align: center;
+}
+
+input{
+    outline-style: none ;
+    border: 1px solid #ccc;
+    /*padding: 14px 14px;*/
+    padding: 7px 8px;
+}
+
+.usertable table{
+    border-collapse: collapse;
+}
+
+.usertable{
+    padding: 10px 0;
+}
+
+.userSelected{
+    font-size: 30px;
+    font-weight: 900;
+    padding: 13px 10px;
+    color: #666666;
+    /*background-color: #666666;*/
+}
+
+.selectedTable{
+    width: 808px;
+    margin-top: 10px;
+    /*background-color: #666666;*/
+}
+
+button {
+    background-color: #666666;
+    border: none;
+    color: white;
+    padding: 6px 34px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+select{
+    height: 32px;
+    border-radius: 5px;
+}

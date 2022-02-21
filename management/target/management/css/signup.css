@@ -1,0 +1,158 @@
+
+
+
+#header {
+    background-color: #454545;
+    width: 100%;
+    overflow: hidden;
+    color: #eee;
+}
+
+
+
+a {
+    color: #888;
+    text-decoration: none;
+}
+
+
+a:hover{
+    color: #eee;
+    -webkit-transition: color 200ms;
+    -o-transition: color 200ms;
+    transition: color 200ms;
+}
+
+body{
+    background: #555555;
+
+}
+
+input[type=checkbox] {
+    zoom:200%;
+}
+.welcome {
+    font-size: 40px;
+    float: left;
+    width: 30%;
+    padding: 30px 30px;
+    font-weight: 900;
+}
+
+.usertype {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.user-exit{
+    float: right;
+    /*padding-left:70px;*/
+}
+
+.userinfo {
+    float: right;
+    padding: 30px 30px;
+}
+
+
+
+.other-info {
+    padding: 10px 10px;
+    width: 90%;
+    background: #eee;
+    height:1000px;
+    float: right;
+}
+
+.method-td {
+    width: 120px;
+    overflow: hidden;
+}
+
+
+
+
+button {
+    background-color: #666666;
+    border: none;
+    color: white;
+    padding: 6px 24px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+input{
+    outline-style: none ;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    /*padding: 14px 14px;*/
+    padding: 10px 8px;
+    height: 14px;
+    width: 200px;
+    font-size: 15px;
+}
+select{
+    border: solid 1px #000;
+    /*appearance:none;*/
+    /*-moz-appearance:none;*/
+    /*-webkit-appearance:none;*/
+    border-radius: 5px;
+    width: 220px;
+    height: 39px;
+    color: #777;
+    font-size: 15px;
+}
+
+.tableTab tr td{
+    padding: 8px 3px;
+    color: #eeeeee;
+    font-size: 20px;
+}
+.tableTab{
+    padding-left: 20px;
+    margin-bottom: 8px;
+}
+
+.login_inner{
+    padding: 20px 20px 40px 20px;
+    background-color: #333333;
+    position: absolute;
+    top: 52%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.ttext{
+    text-align: center;
+    font-size: 30px;
+    font-weight: 900;
+    color: white;
+    margin-bottom: 6px;
+    padding-left: 10px;
+}
+.submit_btn, .alert-danger{
+    padding-left: 25px;
+}
+
+.submit_btn button{
+    background-color: #666666;
+    border: none;
+    color: white;
+    padding: 12px 160px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.alert-danger{
+    color: #FFFFFF;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}

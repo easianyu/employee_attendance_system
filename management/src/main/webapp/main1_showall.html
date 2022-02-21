@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/normalize/5.0.0/normalize.min.css">
+    <link type="text/css" rel="stylesheet" href="css/common.css">
+    <link type="text/css" rel="stylesheet" href="css/main1_showall.css">
+
+    <script type="text/javascript" src="src/jedate.js"></script>
+    <title>查看所有员工</title>
+    <!--导入jquery-->
+    <script src="js/jquery-3.3.1.js"></script>
+    <script>
+        $(function () {
+            $.post("management_war_exploded/user/findAll", {}, function (data) {
+
+                opSelected(data);
+            });
+
+            $("#new_select").click(function () {
+                location.href = "main1_add_user.html";
+            });
+
+            $("#new_ensure").click(function () {
+                $.post("management_war_exploded/user/addANewUser", $("#allUserForm").serialize(), function (data) {
+                    location.reload();
+                });
+            });
+
+            $("#btn_search").click(function () {
+                $.post("management_war_exploded/user/findSelectedUser", $("#man_search_user").serialize(), function (data) {
+                    opSelected(data);
+                });
+            });
+
+            $("#rev_search").click(function () {
+                opSelectedSubmitForm();//获取选中的用户
+                $.post("management_war_exploded/user/updateSelectedUser", $("#submitForm").serialize(), function () {
+                    location.reload();
+                });
+            });
+
+            $("#del_select").click(function () {
+                opSelectedSubmitForm();//获取选中的用户
+                //2.发送ajax请求，提交表单数据
+                $.post("management_war_exploded/user/deleteSelectedUser", $("#submitForm").serialize(), function (data) {
+                    location.reload();
+
+                });
+            });
+
+            $("#out_select").click(function () {
+                var obj = document.getElementById("filechoose");
+                if (obj.style.display === "none") {
+                    obj.style.display = "";
+                } else {
+                    obj.style.display = "none";
+                }
+            });
+        });
+
+
+        //将选中的行写回到页面中再提交
+        function opSelectedSubmitForm() {
+            var dataLength = localStorage.getItem("dataLength");
+            var sum = 0;
+            var submitForm = '<form id="submitForm" name="submitForm">';
+            submitForm += '<table>';
+
+
+            for (var i = 0; i < dataLength; i++) {
+                var tCkbId = "#ckb" + i;
+                var empno = document.getElementById("empno" + i).value;
+                var empname = document.getElementById("empname" + i).value;
+                var emppassword = document.getElementById("emppassword" + i).value;
+                var empposno = document.getElementById("empposno" + i).value;
+                var empemail = document.getElementById("empemail" + i).value;
+                var empphoneno = document.getElementById("empphoneno" + i).value;
+                var depno = document.getElementById("depno" + i).value;
+                if ($(tCkbId).is(':checked')) {
+                    submitForm += '<tr><td><input type="text" id="empno' + sum + '" name="empno' + sum + '"  value="' + empno + '" /></td>';
+                    submitForm += '<td><input type="text" id="empname' + sum + '" name="empname' + sum + '"  value="' + empname + '" /></td>';
+                    submitForm += '<td><input type="text" id="emppassword' + sum + '" name="emppassword' + sum + '"  value="' + emppassword + '" /></td>';
+                    submitForm += '<td><input type="text" id="empposno' + sum + '" name="empposno' + sum + '"  value="' + empposno + '" /></td>';
+                    submitForm += '<td><input type="text" id="empemail' + sum + '" name="empemail' + sum + '"  value="' + empemail + '" /></td>';
+                    submitForm += '<td><input type="text" id="empphoneno' + sum + '" name="empphoneno' + sum + '"  value="' + empphoneno + '" /></td>';
+                    submitForm += '<td><input type="text" id="depno' + sum + '" name="depno' + sum + '"  value="' + depno + '" /></td></tr>';
+                    sum++;
+                }
+            }
+            submitForm += '<input type="text" id="sum" name="sum"  value="' + sum + '" />';
+            submitForm += '</table><form>';
+            $("#ssss").html(submitForm);
+        }
+
+        function opSelected(data) {
+            var lli = '<tr class="list-info">\n' +
+                '            <td>选中</td>\n' +
+                '            <td>员工编号</td>\n' +
+                '            <td>员工姓名</td>\n' +
+                '            <td>员工密码</td>\n' +
+                '            <td>员工职位</td>\n' +
+                '            <td>员工邮箱</td>\n' +
+                '            <td>员工电话</td>\n' +
+                '            <td>所属部门</td>\n' +
+                '        </tr>';
+            var dataLength = data.length;
+            localStorage.setItem("dataLength", dataLength);
+            lli += '<span style="">';
+            lli += '<tr id="newUser" style="display: none">';
+            lli += '<td>';
+            lli += "请在该行输入新增员工信息: ";
+            lli += '</td>';
+            lli += '<form id="manNewUser" name="manNewUser">';
+            lli += '<td>' + '<input type="text" id="empno" name="empno" value="1111" placeholder="">' + '</td>';
+            lli += '<td>' + '<input type="text" id="empname" name="empname" value="yyxyyx">' + '</td>';
+            lli += '<td>' + '<input type="text" id="emppassword" name="emppassword" value="123">' + '</td>';
+            lli += '<td><select id="empposno" name="empposno">';
+            lli += '<option value="10">经理</option>\n' +
+                '                        <option value="20">部门主管</option>\n' +
+                '                        <option value="30">员工</option>\n' +
+                '                    </select>\n';
+
+            lli += '</td>';
+            lli += '<td>' + '<input type="text" id="empemail" name="empemail" value="iii@mm.com">' + '</td>';
+            lli += '<td>' + '<input type="text" id="empphoneno" name="empphoneno" value="1322">' + '</td>';
+            // li += '<td>' + '' + '</td>';
+            lli += '<td><select id="depno" name="depno">';
+            lli += '<option value="100">管理部门</option>\n' +
+                '                        <option value="200">算法部门</option>\n' +
+                '                        <option value="300">开发部门</option>\n' +
+                '                        <option value="400">测试部门</option>\n' +
+                '                        <option value="500">市场部门</option>';
+
+            lli += '</select></td></form>';
+            lli += '</tr><span>';
+
+            for (var i = 0; i < data.length; i++) {
+                var li = '<tr>';
+                li += '<td>';
+                li += '<input type="checkbox" id="ckb' + i + '" name="ckb' + i + '" value="333">';
+                li += '</td>';
+                li += '<td>' + '<input type="text" id="empno' + i + '" name="empno' + i + '" value="' + data[i].empno + '">' + '</td>';
+                li += '<td>' + '<input type="text" id="empname' + i + '" name="empname' + i + '" value="' + data[i].empname + '">' + '</td>';
+                li += '<td>' + '<input type="text" id="emppassword' + i + '" name="emppassword' + i + '" value="' + data[i].emppassword + '">' + '</td>';
+                li += '<td><select id="empposno' + i + '" name="empposno' + i + '">';
+
+                if (data[i].empposno == '经理') {
+                    li += '<option value="10">经理</option>\n' +
+                        '                        <option value="20">部门主管</option>\n' +
+                        '                        <option value="30">员工</option>\n' +
+                        '                    </select>\n';
+                } else if (data[i].empposno == '部门主管') {
+                    li += '<option value="20">部门主管</option>\n' +
+                        '                        <option value="10">经理</option>\n' +
+                        '                        <option value="30">员工</option>\n' +
+                        '                    </select>\n';
+                } else if (data[i].empposno == '员工') {
+                    li += '<option value="30">员工</option>\n' +
+                        '                        <option value="20">部门主管</option>\n' +
+                        '                        <option value="10">经理</option>\n' +
+                        '                    </select>\n';
+                }
+
+                li += '</td>';
+                li += '<td>' + '<input type="text" id="empemail' + i + '" name="empemail' + i + '" value="' + data[i].empemail + '">' + '</td>';
+                li += '<td>' + '<input type="text" id="empphoneno' + i + '" name="empphoneno' + i + '" value="' + data[i].empphoneno + '">' + '</td>';
+                // li += '<td>' + '' + '</td>';
+                li += '<td><select id="depno' + i + '" name="depno' + i + '">';
+                if (data[i].depno == '管理部门') {
+                    li += '<option value="100">管理部门</option>\n' +
+                        '                        <option value="200">算法部门</option>\n' +
+                        '                        <option value="300">开发部门</option>\n' +
+                        '                        <option value="400">测试部门</option>\n' +
+                        '                        <option value="500">市场部门</option>';
+                } else if (data[i].depno == '算法部门') {
+                    li += '<option value="200">算法部门</option>\n' +
+                        '                        <option value="100">管理部门</option>\n' +
+                        '                        <option value="300">开发部门</option>\n' +
+                        '                        <option value="400">测试部门</option>\n' +
+                        '                        <option value="500">市场部门</option>';
+                } else if (data[i].depno == '开发部门') {
+                    li += '<option value="300">开发部门</option>\n' +
+                        '                        <option value="200">算法部门</option>\n' +
+                        '                        <option value="100">管理部门</option>\n' +
+                        '                        <option value="400">测试部门</option>\n' +
+                        '                        <option value="500">市场部门</option>';
+                } else if (data[i].depno == '测试部门') {
+                    li += '<option value="400">测试部门</option>\n' +
+                        '                        <option value="300">开发部门</option>\n' +
+                        '                        <option value="200">算法部门</option>\n' +
+                        '                        <option value="100">管理部门</option>\n' +
+                        '                        <option value="500">市场部门</option>';
+                } else if (data[i].depno == '市场部门') {
+                    li += '<option value="500">市场部门</option>\n' +
+                        '                        <option value="400">测试部门</option>\n' +
+                        '                        <option value="300">开发部门</option>\n' +
+                        '                        <option value="200">算法部门</option>\n' +
+                        '                        <option value="100">管理部门</option>';
+                }
+                li += '</select></td>';
+                li += '</tr>';
+                li += '</form>'
+                lli += li;
+            }
+
+            $("#userall").html(lli);
+        }
+
+    </script>
+
+
+</head>
+<body>
+<div id="header"></div>
+<div class="usermethod">
+    <ul class="so-method">
+        <li>
+            <div class="method-td">
+                <a href="main1_showinfo.html">个人信息</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showall.html">员工信息</a>
+
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showcmp.html">公司信息</a>
+
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showarr.html">班次信息</a>
+
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showturnout.html">出勤信息</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showtemporary.html">临时加班</a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div class="other-info">
+    <div class="info-all">
+
+        <div class="usertable">
+            <div class="userselected">
+                <form id="man_search_user">
+                    <table id="user_search">
+                        <tr>
+                            <td class="td_left">
+                                <label for="depno">部门</label>
+                            </td>
+                            <td>
+                                <select id="depno" name="depno">
+                                    <option value="10">全部</option>
+                                    <option value="100">管理部门</option>
+                                    <option value="200">算法部门</option>
+                                    <option value="300">开发部门</option>
+                                    <option value="400">测试部门</option>
+                                    <option value="500">市场部门</option>
+                                </select>
+                                <button type="button" id="btn_search">查看</button>
+                                <button type="button" id="rev_search">更新选中</button>
+                                <button type="button" id="del_select">删除选中</button>
+                                <button type="button" id="new_select">新增用户</button>
+                                <button type="button" id="out_select">批量导入员工信息</button>
+                                <button type="button" id="new_ensure" style="display: none">确定</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="filechoose" style="display: none;" id="filechoose">
+                <form enctype="multipart/form-data" method="post" action="management_war_exploded/user/inputUsers">
+                    <input type="file"
+                           accept=""
+                           id="uploadfile" name="uploadfile">
+                    <input type="submit" value="提交">
+                </form>
+            </div>
+
+            <div class="all-form">
+                <form id="allUserForm">
+                    <table id="userall"></table>
+                </form>
+            </div>
+            <!--    <form id="man2NewUser" name="man2NewUser">-->
+            <!--        <input type="text" id="know" name="know" value="???">-->
+            <!--    </form>-->
+
+            <div id="sss"></div>
+            <span id="ssss" style="display:none"></span>
+            <!--    <span id="ssss" style=""></span>-->
+        </div>
+    </div>
+</div>
+<!--导入布局js，共享header和footer-->
+<script type="text/javascript" src="js/include.js"></script>
+
+</body>
+</html>

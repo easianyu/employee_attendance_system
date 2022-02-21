@@ -1,0 +1,43 @@
+<!-- 头部 start -->
+
+<script src="js/getParameter.js"></script>
+<script>
+    $(function () {
+        $.post("management_war_exploded/user/mainPage", {}, function (data) {
+            var msg = "你好，" + data.empname;
+            if (data === '') {
+                msg = '';
+            }
+            $("#usertype").html(msg);
+        })
+    })
+
+</script>
+<!--<span id="span_empname"></span>-->
+<link type="text/css" rel="stylesheet" href="css/header.css">
+<header id="header">
+    <div class="banner">
+        <div class="welcome"><div class="welcome_txt">欢迎使用</div></div>
+        <!--            <div class="userimg">-->
+        <!--                <img src="images/userlogo.png" alt="dfdf">-->
+        <!--            </div>-->
+        <div class="userinfo">
+            <div class="usertype" id="usertype">用户类型</div>
+            <div class="user-exit"><a href="javascript:location.href='management_war_exploded/user/exitUser';" >退出</a></div>
+        </div>
+    </div>
+</header>
+<!-- 头部 end -->
+<!-- 首页导航 -->
+<!--<div class="navitem">-->
+<!--    <ul id="category" class="nav"></ul>-->
+<!--</div>-->
+
+
+<!--<div class="usermethod">-->
+<!--    <div class="method01">方法1</div>-->
+<!--    <div class="method02">方法2</div>-->
+<!--    <div class="method03">方法2</div>-->
+<!--    <div class="method04">方法2</div>-->
+<!--    <div class="method05">方法2</div>-->
+<!--</div>-->

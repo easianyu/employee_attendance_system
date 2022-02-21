@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/normalize/5.0.0/normalize.min.css">
+    <link type="text/css" rel="stylesheet" href="css/common.css">
+    <link type="text/css" rel="stylesheet" href="css/main2_showarr.css">
+    <link type="text/css" rel="stylesheet" href="skin/jedate.css">
+    <script type="text/javascript" src="src/jedate.js"></script>
+    <link rel="stylesheet" href="css/main1.css">
+    <title>批量添加排班</title>
+    <!--导入jquery-->
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/intenotify.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/1.9.0/jquery.js"></script>
+    <script>
+
+        $(function () {
+            $.post("management_war_exploded/user/showAllUsersToInte", {}, function (data) {
+                var li = '批量新增 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;所属部门: ' + data[0].depno;
+                $("#selname").html(li);
+                opSelected(data);
+            });
+
+
+            //
+            $("#out_select").click(function () {
+                var obj = document.getElementById("filechoose");
+                if (obj.style.display === "none") {
+                    obj.style.display = "";
+                } else {
+                    obj.style.display = "none";
+                }
+            });
+
+
+            $("#new2_ensure").click(function () { //确定新增
+
+                //15:08 ~ 17:08
+                //2020-06-09 ~ 2020-06-19
+
+                /**
+                 * @dstartDay 2020-06-09
+                 * @dendDay 2020-06-19
+                 * @sstart 15:08
+                 * @eend 17:08
+                 * @type {*|jQuery|string|undefined}
+                 */
+                var ddate = $("#newdate").val();
+                var toltime = $("#newstart").val();
+
+
+                var sstart = toltime.substring(0, 5) + ":00";
+                var eend = toltime.substring(8) + ":00";
+
+                var dstartDay = ddate.substring(0, 10);
+                var dendDay = ddate.substring(13);
+                var isover = $("#newisover").val();
+
+                //确定选中的用户
+                var dataLength = localStorage.getItem("dataLength");
+                var sum = 0;
+                var selEmpno = [];
+                for (var i = 0; i < dataLength; i++) {
+                    var tCkbId = "#ckb" + i;
+                    if ($(tCkbId).is(':checked')) {
+                        selEmpno[sum] = document.getElementById("empno" + i).innerHTML;
+                        sum++;
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "management_war_exploded/arrange/addANewArrByWhole",
+                    data: {
+                        "selEmpno": selEmpno,
+                        "dstartDay": dstartDay,
+                        "dendDay": dendDay,
+                        "sstart": sstart,
+                        "eend": eend,
+                        "isover": isover
+                    },
+                    traditional: true,
+                    async: true,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.flag) {
+                            location.href="main2_showarr.html";
+                        }
+                    },
+                    error: function () {
+                    }
+                });
+            });
+
+
+        });
+
+
+        function opSelected(data) {
+
+            var dataLength = data.length;
+            localStorage.setItem("dataLength", dataLength);
+            var lli = '<tr class="list-info">\n' +
+                '            <td>选中</td>\n' +
+                '            <td>员工编号</td>\n' +
+                '            <td>员工姓名</td>\n' +
+                '        </tr>';
+            lli += '';
+
+            for (var i = 0; i < data.length; i++) {
+                var li = '<tr>';
+                li += '<td>';
+                li += '<input type="checkbox" id="ckb' + i + '" name="ckb' + i + '" value="333">';
+                li += '</td>';
+                li += '<td id="empno' + i + '">' + data[i].empno + '</td>';
+                li += '<td id="empname' + i + '">' + data[i].empname + '</td>';
+                li += '</tr>';
+                lli += li;
+            }
+
+            $("#userall").html(lli);
+        }
+
+
+    </script>
+
+
+</head>
+<body>
+<div id="header"></div>
+<div class="usermethod">
+    <ul class="so-method">
+        <li>
+            <div class="method-td">
+                <a href="main2_showinfo.html">个人信息</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main2_showdep.html">部门信息</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="#">申请审批</a>
+            </div>
+            <ul>
+                <li><a href="main2_leavecheck.html" class="menu1">请假</a></li>
+                <li><a href="main2_backcheck.html" class="menu2">销假</a></li>
+                <li><a href="main2_overcheck.html" class="menu3">加班</a></li>
+            </ul>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main2_showarr.html">班次安排</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main2_showturnout.html">出勤信息</a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div class="other-info">
+    <div class="info-all">
+        <div id="selname" class="selname"></div>
+        <div class="userselected">
+            <form id="man_search_user">
+                <table id="user_search">
+                    <tr>
+
+                        <td><input type="text" class="jeinput" id="newdate" name="newdate"
+                                   placeholder="选择日期">
+                        </td>
+                        <td><input type="text" class="jeinput" id="newstart" name="newstart"
+                                   placeholder="选择员工上下班时间"></td>
+                        <td><select name="newisover" id="newisover">
+                            <option value="none">是否加班</option>
+                            <option value="0">否</option>
+                            <option value="1">是</option>
+                        </select></td>
+                        <td>
+                            <button type="button" id="new2_ensure">添加</button>
+                        </td>
+                        <td>
+                            <button type="button" id="new2_cancel">取消</button>
+                        </td>
+                        <td>
+                            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                        </td>
+                        <td>
+                            <button type="button" id="out_select">导入排班</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <div class="filechoose" style="display: none;" id="filechoose">
+                <form enctype="multipart/form-data" method="post" action="management_war_exploded/arrange/inputArrangement">
+                    <input type="file"
+                           accept=""
+                           id="uploadfile" name="uploadfile">
+                    <input type="submit" value="提交">
+                </form>
+            </div>
+
+
+            <div class="usertable">
+                <table id="userall"></table>
+            </div>
+
+            <div id="sss"></div>
+            <span id="ssss" style="display:none"></span>
+
+            <div id="download"></div>
+        </div>
+
+    </div>
+</div>
+
+<!--导入布局js，共享header和footer-->
+<script type="text/javascript" src="js/include.js"></script>
+<script type="text/javascript" src="test/demo3.js"></script>
+
+
+</body>
+</html>

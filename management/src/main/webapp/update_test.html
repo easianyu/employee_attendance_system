@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>用户信息更新</title>
+    <!--    <link rel="stylesheet" href="css/register.css">-->
+    <!--导入jquery-->
+    <script src="js/jquery-3.3.1.js"></script>
+
+    <script>
+
+        $(function () {
+            //1.给登录按钮绑定单击事件
+            $("#btn_sub").click(function () {
+                //2.发送ajax请求，提交表单数据
+                $.post("updateUserServlet", $("#updateUserForm").serialize(), function () {
+                    location.href = "register_ok.html";
+                });
+            });
+        });
+
+        $.get("category/findAll",{},function (data) {
+            //[{cid:1,cname:国内游},{},{}]
+            var lis = '<li class="nav-active"><a href="index.html">首页</a></li>';
+            //遍历数组,拼接字符串(<li>)
+            for (var i = 0; i < data.length; i++) {
+                var li = '<li><a href="route_list.html?cid='+data[i].cid+'&rname=">'+data[i].cname+'</a></li>';
+                lis += li;
+            }
+            //拼接收藏排行榜的li,<li><a href="favoriterank.html">收藏排行榜</a></li>
+            lis+= '<li><a href="favoriterank.html">收藏排行榜</a></li>';
+            //将lis字符串，设置到ul的html内容中
+            $("#category").html(lis);
+        });
+
+    </script>
+
+
+</head>
+<body>
+
+<div class="update_layout">
+    <div class="update_form_center">
+        <div id="errorMsg" style="color:red;text-align: center"></div>
+        <!--注册表单-->
+        <form id="updateUserForm">
+            <table style="margin-top: 25px;">
+                <tr>
+                    <td class="td_left">
+                        <label for="empno">工号</label>
+                    </td>
+                    <td class="td_right">
+                        <input type="hidden" id="empno" name="empno" value="1000">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_left">
+                        <label for="empname">姓名</label>
+                    </td>
+                    <td class="td_right">
+                        <input type="text" id="empname" name="empname" value="20">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_left">
+                        <label for="emppassword">密码</label>
+                    </td>
+                    <td class="td_right">
+                        <input type="text" id="emppassword" name="emppassword" placeholder="请输入密码">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_left">
+                        <label for="empposno">职位</label>
+                    </td>
+                    <td class="td_right">
+                        <select id="empposno">
+                            <option value="0">经理</option>
+                            <option value="1">部门主管</option>
+                            <option value="2">员工</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_left">
+                        <label for="empemail">mail</label>
+                    </td>
+                    <td class="td_right">
+                        <input type="text" id="empemail" name="empemail" placeholder="请输入邮箱">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_left">
+                        <label for="empphoneno">电话</label>
+                    </td>
+                    <td class="td_right">
+                        <input type="text" id="empphoneno" name="empphoneno" placeholder="请输入邮箱">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_left">
+                        <label for="depno">公司部门</label>
+                    </td>
+                    <td class="td_right">
+                        <select id="depno">
+                            <option value="100">管理部门</option>
+                            <option value="200">算法部门</option>
+                            <option value="300">开发部门</option>
+                            <option value="400">测试部门</option>
+                            <option value="500">市场部门</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="td_left">
+                    </td>
+                    <td class="td_right check">
+                        <button type="button" id="btn_sub">更新</button>
+                        <span id="msg" style="color: red;"></span>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+
+    <div class="rg_form_right">
+        <p>
+            已有账号？
+            <a href="#">立即登录</a>
+        </p>
+    </div>
+</div>
+<!--导入布局js，共享header和footer-->
+<script type="text/javascript" src="js/include.js"></script>
+
+</body>
+</html>

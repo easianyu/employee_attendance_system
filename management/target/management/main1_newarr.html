@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/normalize/5.0.0/normalize.min.css">
+    <link type="text/css" rel="stylesheet" href="css/common.css">
+    <link type="text/css" rel="stylesheet" href="css/main1_showinfo.css">
+    <link type="text/css" rel="stylesheet" href="skin/jedate.css">
+    <script type="text/javascript" src="src/jedate.js"></script>
+    <link rel="stylesheet" href="css/main1.css">
+    <!--    <link type="text/css" rel="stylesheet" href="test/jeDate-test.css">-->
+    <!--    <link type="text/css" rel="stylesheet" href="skin/jedate.css">-->
+    <title>经理增加临时加班</title>
+    <!--导入jquery-->
+    <script src="js/jquery-3.3.1.js"></script>
+
+    <script>
+        $(function () {
+            //1.给登录按钮绑定单击事件
+            $("#btn_sub").click(function () {
+                //2.发送ajax请求，提交表单数据
+                $.post("management_war_exploded/arrange/addANewArr", $("#updateUserForm").serialize(), function () {
+                    location.href="main1_showarr.html";
+                });
+            });
+        });
+    </script>
+
+
+</head>
+<body>
+<div id="header"></div>
+<div class="usermethod">
+    <ul class="so-method">
+        <li>
+            <div class="method-td">
+                <a href="main1_showinfo.html">个人信息</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showall.html">员工信息</a>
+
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showcmp.html">公司信息</a>
+
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showarr.html">班次信息</a>
+
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showturnout.html">出勤信息</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main1_showtemporary.html">临时加班</a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+
+<div class="other-info">
+    <div class="info-all">
+
+    <div id="errorMsg" style="color:red;text-align: center"></div>
+    <!--注册表单-->
+    <div class="new-user">输&nbsp;入&nbsp;排&nbsp;班&nbsp;信&nbsp;息</div>
+    <div class="updateUserForm">
+        <form id="updateUserForm">
+            <table id="infotable">
+                <tr>
+                    <td><label for="empno">员工工号</label></td>
+                    <td><input type="text" id="empno" name="empno"></td>
+                </tr>
+                <tr>
+                    <td><label class="jelabel">上班时间</label>
+                    <td>
+                        <div class="jeinpbox"><input type="text" class="jeinput" id="empstart" name="empstart" placeholder="选择员工上下班时间"></div>
+                    </td>
+                </tr>
+                <tr>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+    <div class="update-btn">
+        <button type="button" id="btn_sub">确认新增</button>
+    </div>
+    </div>
+</div>
+
+<!--导入布局js，共享header和footer-->
+<script type="text/javascript" src="js/include.js"></script>
+
+<script type="text/javascript" src="test/demo.js"></script>
+
+</body>
+</html>

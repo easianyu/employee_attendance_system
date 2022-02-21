@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <title>用户信息更新</title>
+    <!--    <link rel="stylesheet" href="css/register.css">-->
+    <!--导入jquery-->
+    <script src="js/jquery-3.3.1.js"></script>
+
+    <script>
+
+        $(function () {
+            //1.给登录按钮绑定单击事件
+            $("#btn_sub").click(function () {
+                //2.发送ajax请求，提交表单数据
+                $.post("management_war_exploded/user/updateUser", $("#updateUserForm").serialize(), function () {
+                    location.href = "main1.html";
+                });
+            });
+        });
+
+        $(function () {
+            $.post("management_war_exploded/user/mainPage", {}, function (data) {
+                $("#empno_dis").html(data.empno);
+                $("#empname_dis").html(data.empname);
+                $("#emppassword_dis").html(data.emppassword);
+                $("#empemail_dis").html(data.empemail);
+                $("#empphoneno_dis").html(data.empphoneno);
+                $("#empposno_dis").html(data.empposno);
+                $("#depno_dis").html(data.depno);
+            })
+        })
+
+    </script>
+
+
+</head>
+<body>
+<div id="header"></div>
+<div class="update_layout">
+    <div class="update_form_center">
+        <div id="errorMsg" style="color:red;text-align: center"></div>
+        <!--注册表单-->
+        <form id="updateUserForm">
+            <table style="margin-top: 25px;">
+                <tr>
+                    <td class="td_left">
+                        <label for="empno">工号</label>
+                    </td>
+                    <td class="td_right">
+                        <input type="hidden" id="empno" name="empno" value="1000">
+                        <div id="empno_dis"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_left">
+                        <label for="empname">姓名</label>
+                    </td>
+                    <td class="td_right">
+                        <input type="text" id="empname" name="empname" placeholder="请输入姓名">
+                    </td>
+                    <td>
+                        <div id="empname_dis"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_left">
+                        <label for="emppassword">密码</label>
+                    </td>
+                    <td class="td_right">
+                        <input type="text" id="emppassword" name="emppassword" placeholder="请输入密码">
+                    </td>
+                    <td>
+                        <div id="emppassword_dis"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_left">
+                        <label for="empposno">职位</label>
+                    </td>
+                    <td class="td_right">
+                        <select id="empposno" name="empposno">
+                            <option value="10">经理</option>
+                            <option value="20">部门主管</option>
+                            <option value="30">员工</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div id="empposno_dis"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_left">
+                        <label for="empemail">mail</label>
+                    </td>
+                    <td class="td_right">
+                        <input type="text" id="empemail" name="empemail" placeholder="请输入邮箱">
+                    </td>
+                    <td>
+                        <div id="empemail_dis"></div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_left">
+                        <label for="empphoneno">电话</label>
+                    </td>
+                    <td class="td_right">
+                        <input type="text" id="empphoneno" name="empphoneno" placeholder="请输入电话">
+                    </td>
+                    <td>
+                        <div id="empphoneno_dis"></div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_left">
+                        <label for="depno">公司部门</label>
+                    </td>
+                    <td class="td_right">
+                        <select id="depno" name="depno">
+                            <option value="100">管理部门</option>
+                            <option value="200">算法部门</option>
+                            <option value="300">开发部门</option>
+                            <option value="400">测试部门</option>
+                            <option value="500">市场部门</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div id="depno_dis"></div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="td_left">
+                    </td>
+                    <td class="td_right check">
+                        <button type="button" id="btn_sub">更新</button>
+                        <span id="msg" style="color: red;"></span>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+
+<!--    <div class="rg_form_right">-->
+<!--        <p>-->
+<!--            已有账号？-->
+<!--            <a href="#">立即登录</a>-->
+<!--        </p>-->
+<!--    </div>-->
+</div>
+<!--导入布局js，共享header和footer-->
+<script type="text/javascript" src="js/include.js"></script>
+
+</body>
+</html>

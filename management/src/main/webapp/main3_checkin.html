@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/normalize/5.0.0/normalize.min.css">
+    <link type="text/css" rel="stylesheet" href="css/common.css">
+    <link type="text/css" rel="stylesheet" href="css/main3_checkin.css">
+
+    <link rel="stylesheet" href="css/main1.css">
+    <title>出勤打卡</title>
+    <!--导入jquery-->
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/facecheck.js"></script>
+
+    <script>
+        $(function () {
+            $.post("management_war_exploded/arrange/showUserArrToday", {}, function (data) {
+                var dataLength = data.length;
+                localStorage.setItem("dataLength", dataLength);
+                if (data !== "") {
+                    var li = '今日班次安排'
+                        + '&nbsp;&nbsp;&nbsp;&nbsp;工号：' + data[0].empno
+                        + '&nbsp;&nbsp;&nbsp;&nbsp;姓名：' + data[0].empname
+                        + '&nbsp;&nbsp;&nbsp;&nbsp;所属部门: ' + data[0].depname;
+                    localStorage.setItem("alertTime", 1);//页面载入时设置下班超时之后让用户申请加班的提醒次数
+                    localStorage.setItem("alertTime2", 1);//提醒员工上下班时间的
+                    $("#selname").html(li);
+                    $("#empno_search").val(data[0].empno);
+
+
+                    opSelected(data);
+                }
+            });
+
+            $.post("management_war_exploded/user/notify", {}, function (data) {
+                var ckbItem = document.getElementById("ckb");
+                if (data.flag) {//如果后台返回是开启的，将checkbox选中
+                    ckbItem.checked = true;
+                    localStorage.setItem("ckbStatus", "true");
+                } else {
+                    localStorage.setItem("ckbStatus", "false");
+                }
+
+            })
+        });
+
+        function CatchCode() {
+            //获取图像
+            var checkfor;
+            var arrno;
+            var startVal;
+            var endVal;
+            var i;
+            var img = getBase64();
+            var recordTime = localStorage.getItem("recordTime"); //获取打卡时间
+            var dataLength = localStorage.getItem("dataLength"); //获取今日排班总数，遍历打卡用
+            for (i = 0; i < dataLength; i++) {
+                arrno = document.getElementById("arrno" + i).innerHTML;
+                startVal = document.getElementById("rlstart" + i).innerHTML;
+                endVal = document.getElementById("rlend" + i).innerHTML;
+                if (startVal === "") { //如果实际上班时间是空的，那么上班打卡
+                    checkfor = "0";
+                    break;
+                } else if (endVal === "") { //下班打卡
+                    checkfor = "1";
+                    break;
+                }
+            }
+            if (i + '' === dataLength) {
+                alert("当前无需打卡的排班");
+                return;
+            }
+
+            //Ajax将Base64字符串传输到后台处理
+            $.post("management_war_exploded/face/faceTest", {
+                arrno: arrno,
+                checkfor: checkfor,
+                recordTime: recordTime,
+                img: img
+            }, function (data) {
+                if (data.flag) {
+                    //关闭摄像头
+                    video.srcObject.getTracks()[0].stop();
+                    var videoarea = document.getElementById("videoarea");
+                    videoarea.style.display = "none";
+                    //提醒用户识别成功
+                    alert("打卡成功!");
+                    location.reload();
+                    //验证成功跳转页面
+                    //window.location.href="";
+                } else {
+                    alert("不是本人，打卡失败");
+                }
+            });
+        }
+
+        function opSelected(data) {
+            var lli = '<tr class="list-info">\n' +
+                '            <td>排班编号</td>\n' +
+                '            <td>上班时间</td>\n' +
+                '            <td>实际上班时间</td>\n' +
+                '            <td>下班时间</td>\n' +
+                '            <td>实际下班时间</td>\n' +
+                '            <td>是否加班</td>\n' +
+                '            <td>是否请假</td>\n' +
+                '            <td>是否是临时排班</td>\n' +
+                '        </tr>';
+            lli += '';
+
+            for (var i = 0; i < data.length; i++) {
+                var li = '<tr>';
+                li += '<td id="arrno' + i + '">' + data[i].arrno + '</td>';
+                li += '<td id="start' + i + '">' + data[i].start + '</td>';
+                li += '<td id="rlstart' + i + '">' + data[i].rlstart + '</td>';
+                li += '<td id="end' + i + '">' + data[i].end + '</td>';
+                li += '<td id="rlend' + i + '">' + data[i].rlend + '</td>';
+                li += '<td id="isover' + i + '">' + data[i].isover + '</td>';
+                li += '<td id="isleave' + i + '">' + data[i].isleave + '</td>';
+                li += '<td id="istemporary' + i + '">' + data[i].istemporary + '</td>';
+                li += '</tr>';
+                lli += li;
+            }
+            $("#userall").html(lli);
+        }
+
+
+        $(function () {
+            var t = null;
+            t = setTimeout(time, 1000);//開始运行
+            function time() {
+                clearTimeout(t);//清除定时器
+                dt = new Date();
+                var year = dt.getFullYear();
+                var month = dt.getMonth() + 1;//(0-11,0代表1月)
+                var date = dt.getDate();//获取天
+                var num = dt.getDay();//获取星期
+                var weekday = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+                var hour = dt.getHours();//获取时
+                var minute = dt.getMinutes();//获取分
+                var second = dt.getSeconds();//获取秒
+                //分秒时间是一位数字，在数字前补0。
+                date = extra(date);
+                month = extra(month);
+                minute = extra(minute);
+                second = extra(second);
+                //记录传给后台的数据
+                var recordTime = year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
+                localStorage.setItem("recordTime", recordTime);
+                document.getElementById("start").innerHTML = year + " 年 " + month + " 月 " + date + " 日 " + hour + "：" + minute + "：" + second + " " + weekday[num];
+                // document.getElementById("start").innerHTML = recordTime + " " + weekday[num];
+
+                var ckbStatus;
+                var dataLength = localStorage.getItem("dataLength"); //获取今日排班总数
+                if ($("#ckb").is(':checked') && dataLength > 0) {
+                    ckbStatus = "true";
+                    //找到第一个已经打卡上班但没打卡下班的，获取当前时间不断跟安排的下班时间进行比较，判断是否要提醒员工申请加班
+                    for (i = 0; i < dataLength; i++) {
+                        arrno = document.getElementById("arrno" + i).innerHTML;
+                        startVal = document.getElementById("rlstart" + i).innerHTML;
+                        endVal = document.getElementById("rlend" + i).innerHTML;
+                        //09:09
+                        if (startVal !== "" && endVal === "") { //上班已打卡，下班未打卡
+                            var arrEndVal = document.getElementById("end" + i).innerHTML; //获取安排的下班时间
+                            arrEndVal = arrEndVal.slice(0, 2) + arrEndVal.slice(3, 5); //去掉"xx:xx"中的':'
+                            arrEndVal = parseInt(arrEndVal);//化成纯数字进行比较
+                            var currentTime = parseInt(hour + '' + minute);
+                            var alertTime = localStorage.getItem("alertTime");
+                            if (alertTime === "1" && currentTime > arrEndVal) {
+                                alert("已到下班时间，如需继续工作请申请加班");
+                                localStorage.setItem("alertTime", 0);//提醒后设置提醒次数为0
+                            }
+                            break;
+                        }
+                        var alertTime2 = localStorage.getItem("alertTime2");
+                        if (alertTime2 === "1" && startVal === "" && endVal === "") { //上班已打卡，下班未打卡
+                            var arrStartVal = document.getElementById("start" + i).innerHTML; //获取安排的下班时间
+                            var arrEndVal = document.getElementById("end" + i).innerHTML; //获取安排的下班时间
+                            var msg = '今日下一条排班的上班时间为: ' + arrStartVal +
+                                '下班时间为: ' + arrEndVal;
+                            alert(msg);
+                            localStorage.setItem("alertTime2", 0);//提醒后设置提醒次数为0
+                        }
+                    }
+                } else {
+                    ckbStatus = "false";
+                }
+
+                var oldCkbStatus = localStorage.getItem("ckbStatus");
+                if (ckbStatus !== oldCkbStatus) { //如果选中框的状态改变了，返回后台进行数据修改
+                    $.post("management_war_exploded/user/changeNotify", {
+                        ckbStatus: ckbStatus
+                    }, function () {
+                    })
+                }
+
+                t = setTimeout(time, 1000); //设定定时器，循环运行
+            }
+        });
+
+        //补位函数。
+        function extra(x) {
+            //如果传入数字小于10，数字前补一位0。
+            if (x < 10) {
+                return "0" + x;
+            } else {
+                return x;
+            }
+        }
+    </script>
+
+
+</head>
+<body>
+<div id="header"></div>
+<div class="usermethod">
+    <ul class="so-method">
+        <li>
+            <div class="method-td">
+                <a href="main3_showinfo.html">个人信息</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main3_showarr.html">班次安排</a>
+
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main3_showturnout.html">出勤信息</a>
+            </div>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="#">申&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请</a>
+            </div>
+            <ul>
+                <li><a href="main3_leaveapply.html" class="menu1">请假</a></li>
+                <li><a href="main3_overapply.html" class="menu3">加班</a></li>
+            </ul>
+        </li>
+        <li>
+            <div class="method-td">
+                <a href="main3_checkin.html">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;卡</a>
+            </div>
+        </li>
+
+    </ul>
+</div>
+
+<div class="other-info">
+    <div class="info-all">
+        <div class="current">
+            <table>
+                <tr>
+                    <div id="start" class="start"></div>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <table>
+                <tr>
+                    <td>
+                        <button id="ensuretype">开始打卡</button>
+                    </td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;开启加班提醒</td>
+                    <td><input type="checkbox" id="ckb" name="ckb"></td>
+                </tr>
+            </table>
+        </div>
+        <div align="center" id="videobutton" class="videobutton" style="display: none">
+            <button id="open">开启摄像头</button>
+            <button id="close">关闭摄像头</button>
+            <button id="CatchCode">拍照打卡</button>
+            <div id="videoarea" align="center">
+                <video id="video" class="video" width="800px" height="800px" autoplay></video>
+                <canvas hidden="hidden" id="canvas" width="626" height="800"></canvas>
+            </div>
+        </div>
+        <div class="all-form">
+            <div id="selname" class="selname"></div>
+            <div class="usertable">
+
+                <table id="userall"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--导入布局js，共享header和footer-->
+<script type="text/javascript" src="js/include.js"></script>
+
+
+</body>
+</html>

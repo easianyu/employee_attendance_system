@@ -1,0 +1,94 @@
+.userselected {
+    margin-bottom: 10px;
+}
+
+.userselected select {
+    height: 32px;
+    border-radius: 5px;
+
+}
+
+.all-form select {
+    border: solid 1px #000;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background: url("http://ourjs.github.io/static/2015/arrow.png") no-repeat scroll right center transparent;
+    padding-right: 14px;
+    height: 33px;
+}
+
+button {
+    background-color: #666666;
+    border: none;
+    color: white;
+    padding: 6px 34px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+input {
+    outline-style: none;
+    border: 1px solid #ccc;
+    /*padding: 14px 14px;*/
+    padding: 7px 8px;
+}
+
+.list-info {
+    color: #555555;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 900;
+
+}
+
+.usertable table tr td {
+    border: 3px solid #777777;
+    padding: 8px 60px;
+}
+
+.usertable table {
+    border-collapse: collapse;
+}
+
+.usertable, .newArr {
+    padding: 15px 0;
+}
+
+.selname {
+    font-size: 30px;
+    color: #555555;
+    font-weight: 900;
+    padding: 10px 0;
+}
+
+.reason {
+    width: 400px;
+    height: 260px;
+    text-decoration: none;
+    border-radius: 5px;
+    /*background-color: rgba(241, 241, 241, .98);*/
+    padding: 10px;
+    resize: none;
+}
+
+.rrr{
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.newArr input{
+    width: 320px;
+    height: 30px;
+}
+
+.bbutton button{
+    width: 180px;
+    height: 40px;
+}
+
+.bbutton{
+    padding-left: 20px;
+}
