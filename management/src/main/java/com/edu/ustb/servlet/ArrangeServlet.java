@@ -1011,7 +1011,6 @@ public class ArrangeServlet extends BaseServlet {
      * @return uuid+"_"+文件的原始名称
      * @Method: makeFileName
      * @Description: 生成上传文件的文件名，文件名以：uuid+"_"+文件的原始名称
-     * @Anthor:孤傲苍狼
      */
     private String makeFileName(String filename) {  //2.jpg
         //为防止文件覆盖的现象发生，要为上传文件产生一个唯一的文件名
@@ -1026,7 +1025,6 @@ public class ArrangeServlet extends BaseServlet {
      * @return 新的存储目录
      * @Method: makePath
      * @Description:
-     * @Anthor:孤傲苍狼
      */
     private String makePath(String filename, String savePath) {
         //得到文件名的hashCode的值，得到的就是filename这个字符串对象在内存中的地址
